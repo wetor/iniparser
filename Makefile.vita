@@ -1,0 +1,29 @@
+# makefile by Wetor
+
+TARGET_LIB = libiniparser.a
+OBJS= src/iniparser.o \
+	src/dictionary.o
+
+PREFIX  = arm-vita-eabi
+CC      = $(PREFIX)-gcc
+AR      = $(PREFIX)-ar
+
+CCFLAGS  = -Wl,-q -Wall -O3 -Isrc -fno-lto
+CFLAGS = $(CCFLAGS)
+
+ASFLAGS = $(CFLAGS)
+
+$(TARGET_LIB): $(OBJS)
+	$(AR) rcs $@ $^
+%.o : %.c
+	@echo [CC] $<
+	$(CC) $(CFLAGS) -c $< -o $@
+clean:
+	@rm -rf $(TARGET_LIB) $(OBJS)
+	@rm -rf src/*.o
+
+install: $(TARGET_LIB)
+	@cp $(TARGET_LIB) "$(VITASDK)/arm-vita-eabi/lib"
+	@cp src/*.h "$(VITASDK)/arm-vita-eabi/include"
+	@echo "Installed!"
+
